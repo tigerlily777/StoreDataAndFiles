@@ -7,11 +7,11 @@ common usecases:
 	•	遵守 Scoped Storage 的权限模型
 
  文档分为几大类：https://developer.android.com/training/data-storage 
-	1.	🔹 Key-Value 数据（SharedPreferences / DataStore）
-	2.	📁 App-specific 文件（Internal / External Storage）
-	3.	📷 共享媒体文件（图片、视频、音频）
-	4.	📄 使用 SAF（Storage Access Framework）打开/保存文件
-	5.	🧾 数据库（Room / SQLite）
+	1. 🔹 Key-Value 数据（SharedPreferences / DataStore）
+	2. 📁 App-specific 文件（Internal / External Storage）
+	3. 📷 共享媒体文件（图片、视频、音频）
+	4. 📄 使用 SAF（Storage Access Framework）打开/保存文件
+	5. 🧾 数据库（Room / SQLite）
 
 ### 🔹 1️⃣ SharedPreferences（键值对存储）
 这是 Android 里最轻量、最简单的本地持久化方式，非常适合保存：
