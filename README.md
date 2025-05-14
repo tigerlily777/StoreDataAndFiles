@@ -217,4 +217,36 @@ Log.d("Storage", "路径: $path") // 通常是 /data/data/包名/files
 | `MODE_APPEND`                  | 追加写入（文件存在时）                |
 | `MODE_WORLD_READABLE / WRITEABLE` | 已废弃，不再推荐使用                 |
 
- 
+
+🧭 Internal Storage 图解：应用如何读写文件？
+
+📦 内部结构图（简化视角）：
+📱 Android 文件系统
+└── /data/
+    └── /data/
+        └── com.example.myapp/   ← 你 app 的沙盒
+            ├── files/           ← 内部存储目录
+            │   ├── my_file.txt  ← 你写入的文件
+            │   └── cache.json
+            └── cache/           ← 临时缓存文件夹
+
+
+📋 写入文件流程图：
+graph TD
+    A[你点击按钮/触发保存] --> B[openFileOutput("my_file.txt")]
+    B --> C[返回 OutputStream]
+    C --> D[write("内容".toByteArray())]
+    D --> E[自动保存到 /data/data/包名/files/]
+
+
+📋 读取文件流程图：
+graph TD
+    A[你触发读取操作] --> B[openFileInput("my_file.txt")]
+    B --> C[返回 InputStream]
+    C --> D[bufferedReader() → 读取内容]
+    D --> E[显示在界面上]
+    
+✅ 总结一句话：
+
+内部存储 = 你 app 专属的小仓库
+用 openFileOutput 写，用 openFileInput 读，数据保存在 /data/data/包名/files/ 中。
