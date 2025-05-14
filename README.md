@@ -148,7 +148,7 @@ fun UserPreferenceScreen() {
         }
 
         Button(
-            onClick = {
+onClick = {
                 val name = sharedPrefs.getString(MainActivity.KEY_USERNAME, "默认用户名")
                 displayText = "current username：$name"
             },
@@ -165,5 +165,56 @@ fun UserPreferenceScreen() {
     }
 }
 ```
+### 🔹 2️⃣ Internal storage
+🔍 什么是 Internal Storage？
+
+Internal Storage 是 应用私有的文件存储空间，其他 app 无法访问，文件也不会出现在用户的文件管理器中。
+
+📌 特点：
+	•	不需要请求权限（安全又简单）
+	•	卸载 app 后文件会一起被删除
+	•	文件默认只对当前 app 可见（私有）
+
+⸻
+
+✏️ 常见用途：
+	•	缓存数据（如用户头像、草稿）
+	•	存储 JSON、文本、日志等
+	•	保存图片或二进制文件（如音频）
+
+⸻
+
+✅ 你可以使用以下方式读写文件
+📥 写入文件：
+```kotlin
+val filename = "my_file.txt"
+val fileContents = "Hello, internal storage!"
+openFileOutput(filename, Context.MODE_PRIVATE).use {
+    it.write(fileContents.toByteArray())
+}
+```
+	•	openFileOutput() 会在 internal storage 中创建（或替换）这个文件
+	•	MODE_PRIVATE 表示只有当前 app 可访问（默认模式）
+
+📤 读取文件：
+```kotlin
+val filename = "my_file.txt"
+val content = openFileInput(filename).bufferedReader().useLines { lines ->
+    lines.fold("") { some, text -> "$some\n$text" }
+}
+```
+🗂️ 文件保存在哪？
+
+使用 context.filesDir 获取 app 的 internal storage 路径：
+```kotlin
+val path = applicationContext.filesDir
+Log.d("Storage", "路径: $path") // 通常是 /data/data/包名/files
+```
+🧠 小知识：
+| 模式                            | 说明                                 |
+|:--------------------------------|:--------------------------------------|
+| `MODE_PRIVATE`                 | 只允许当前 app 访问（默认）           |
+| `MODE_APPEND`                  | 追加写入（文件存在时）                |
+| `MODE_WORLD_READABLE / WRITEABLE` | 已废弃，不再推荐使用                 |
 
  
