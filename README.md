@@ -47,5 +47,120 @@ val prefs = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
 ```kotlin
 prefs.edit().putString("username", "Alice").apply()
 ```
-• apply() 异步（推荐）
-• commit() 同步（立即写入，可能卡顿）
+* apply() 异步（推荐）
+* commit() 同步（立即写入，可能卡顿）
+
+✅ 读取数据
+```
+val username = prefs.getString("username", "default_value")
+```
+✅ 删除或清除数据
+```
+prefs.edit().remove("username").apply()
+prefs.edit().clear().apply() // 清空所有
+```
+✅ 存储位置？
+/data/data/your.package.name/shared_prefs/my_prefs.xml
+只能被你这个 App 访问，非常安全（默认 Internal Storage）。
+
+🌟 常见使用场景
+| 场景                 | 用法                                 |
+|:----------------------|:--------------------------------------|
+| 保存上次登录的用户名 | `putString("last_username", "...")`   |
+| 暗黑模式是否启用     | `putBoolean("dark_mode", true)`       |
+| 用户是否已登录       | `putBoolean("is_logged_in", true)`    |
+
+⸻
+
+🎯 一个简单实用的 SharedPreferences 小练习
+
+我们做一个简单的登录状态存储器：
+✨ 功能说明
+	•	输入用户名
+	•	点击「保存用户名」后写入 SharedPreferences
+	•	点击「读取用户名」后显示读取结果
+ 
+ MainActivity.kt：
+ ```kotlin
+package com.example.sharedprefscompose
+
+import android.content.Context
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+
+    companion object {
+        const val PREFS_NAME = "my_prefs"
+        const val KEY_USERNAME = "username"
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            UserPreferenceScreen()
+        }
+    }
+}
+
+@Composable
+fun UserPreferenceScreen() {
+    val context = LocalContext.current
+    val sharedPrefs = context.getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+
+    var inputText by remember { mutableStateOf(TextFieldValue("")) }
+    var displayText by remember { mutableStateOf("display username") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        TextField(
+            value = inputText,
+            onValueChange = { inputText = it },
+            label = { Text("Enter username") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Button(
+            onClick = {
+                sharedPrefs.edit()
+                    .putString(MainActivity.KEY_USERNAME, inputText.text)
+                    .apply()
+                displayText = "Username saved ✅"
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Save username")
+        }
+
+        Button(
+            onClick = {
+                val name = sharedPrefs.getString(MainActivity.KEY_USERNAME, "默认用户名")
+                displayText = "current username：$name"
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("read username")
+        }
+
+        Text(
+            text = displayText,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+    }
+}
+```
+
+ 
