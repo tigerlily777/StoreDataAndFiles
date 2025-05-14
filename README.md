@@ -13,16 +13,26 @@ common usecases:
 	4. 📄 使用 SAF（Storage Access Framework）打开/保存文件
 	5. 🧾 数据库（Room / SQLite）
 
+Consider the following questions when choosing the solutions of storage:
+1. How much space does your data require?
+2. How reliable does data access need to be?
+3. What kind of data do you need to store?
+4. Should the data be private to your app?
+
+### Save to app-specific storage
+Access app-specific files 
+
+
 ### 🔹 1️⃣ SharedPreferences（键值对存储）
-这是 Android 里最轻量、最简单的本地持久化方式，非常适合保存：
+这是 Android most lightweighted、最简单的本地持久化方式，非常适合保存：
 	•	login status
 	•	settings switches（DarkMode 开启否？）
 	•	records of last time usage
 	•	simple cache
 
- ✅ 什么是 SharedPreferences？
+ ✅ What is SharedPreferences？
 
-它是一个**键值对（Key-Value）**型的存储，适合存：Boolean, Int, Float, Long, String, Set<String>
+它是一个**键值对（Key-Value）**型的存储，suitable for：Boolean, Int, Float, Long, String, Set<String>
 
 ⚠️ Not suitable for structured data, object, files or images
 
