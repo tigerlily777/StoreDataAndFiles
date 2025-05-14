@@ -221,6 +221,7 @@ Log.d("Storage", "路径: $path") // 通常是 /data/data/包名/files
 🧭 Internal Storage 图解：应用如何读写文件？
 
 📦 内部结构图（简化视角）：
+```
 📱 Android 文件系统
 └── /data/
     └── /data/
@@ -229,24 +230,117 @@ Log.d("Storage", "路径: $path") // 通常是 /data/data/包名/files
             │   ├── my_file.txt  ← 你写入的文件
             │   └── cache.json
             └── cache/           ← 临时缓存文件夹
-
+```
 
 📋 写入文件流程图：
+```
 graph TD
     A[你点击按钮/触发保存] --> B[openFileOutput("my_file.txt")]
     B --> C[返回 OutputStream]
     C --> D[write("内容".toByteArray())]
     D --> E[自动保存到 /data/data/包名/files/]
-
+```
 
 📋 读取文件流程图：
+```
 graph TD
     A[你触发读取操作] --> B[openFileInput("my_file.txt")]
     B --> C[返回 InputStream]
     C --> D[bufferedReader() → 读取内容]
     D --> E[显示在界面上]
-    
+```    
 ✅ 总结一句话：
 
 内部存储 = 你 app 专属的小仓库
 用 openFileOutput 写，用 openFileInput 读，数据保存在 /data/data/包名/files/ 中。
+
+#### 一个 ✨Jetpack Compose 小项目✨，实现 内部存储的读写操作。
+✅ 功能目标：
+	•	输入内容，点击“保存”按钮写入内部文件
+	•	点击“读取”按钮，显示文件内容
+
+⸻
+
+📂 文件结构
+```
+MainActivity.kt  ← 包含所有逻辑（Compose UI + 文件操作）
+```
+🧑‍💻 完整代码（Compose + 内部存储）：
+```kotlin
+// MainActivity.kt
+package com.example.internalstorage
+
+import android.content.Context
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+
+    private val fileName = "my_internal_file.txt"
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            InternalStorageScreen(
+                context = this,
+                fileName = fileName
+            )
+        }
+    }
+}
+
+@Composable
+fun InternalStorageScreen(context: Context, fileName: String) {
+    var inputText by remember { mutableStateOf("") }
+    var fileContent by remember { mutableStateOf("") }
+
+    Column(modifier = Modifier
+        .padding(16.dp)
+        .fillMaxSize()) {
+
+        TextField(
+            value = inputText,
+            onValueChange = { inputText = it },
+            label = { Text("请输入内容") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Row {
+            Button(onClick = {
+                // 写入文件
+                context.openFileOutput(fileName, Context.MODE_PRIVATE).use {
+                    it.write(inputText.toByteArray())
+                }
+            }) {
+                Text("保存")
+            }
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Button(onClick = {
+                // 读取文件
+                fileContent = try {
+                    context.openFileInput(fileName).bufferedReader().use { it.readText() }
+                } catch (e: Exception) {
+                    "读取失败: ${e.message}"
+                }
+            }) {
+                Text("读取")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text("📄 文件内容：")
+        Text(fileContent)
+    }
+}
+```
