@@ -10,11 +10,11 @@
 | Proto/DataStore     | 替代 SharedPreferences 的新方案，性能更好，支持异步           | 设置偏好、持久化状态等               |
 
  文档分为几大类：https://developer.android.com/training/data-storage 
-	1. 🔹 Key-Value 数据（SharedPreferences / DataStore）
-	2. 📁 App-specific 文件（Internal / External Storage）
-	3. 📷 共享媒体文件（图片、视频、音频）
-	4. 📄 使用 SAF（Storage Access Framework）打开/保存文件
-	5. 🧾 数据库（Room / SQLite）
+* 1. 🔹 Key-Value 数据（SharedPreferences / DataStore）
+* 2. 📁 App-specific 文件（Internal / External Storage）
+* 3. 📷 共享媒体文件（图片、视频、音频）
+* 4. 📄 使用 SAF（Storage Access Framework）打开/保存文件
+* 5. 🧾 数据库（Room / SQLite）
 
 Consider the following questions when choosing the solutions of storage:
 1. How much space does your data require?
