@@ -43,4 +43,9 @@ We use PreferenceManager or Context.getSharedPreferences()。
 ```kotlin
 val prefs = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
 ```
-
+✅ 写入数据（edit + apply 或 commit）
+```kotlin
+prefs.edit().putString("username", "Alice").apply()
+```
+• apply() 异步（推荐）
+• commit() 同步（立即写入，可能卡顿）
