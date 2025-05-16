@@ -265,6 +265,7 @@ graph TD
 ```
 MainActivity.kt  ← 包含所有逻辑（Compose UI + 文件操作）
 ```
+
 🧑‍💻 完整代码（Compose + 内部存储）：
 ```kotlin
 // MainActivity.kt
@@ -344,3 +345,5 @@ fun InternalStorageScreen(context: Context, fileName: String) {
     }
 }
 ```
+
+
