@@ -363,7 +363,7 @@ DAO      = Repository 接口，定义你想查/存的动作
 Database = 数据库对象，创建数据库 + 提供 DAO 实例
 ```
 
-🎯 Sample：Room 的最小用法预览
+#### 🎯 Sample：Room 的最小用法预览
 1️⃣ @Entity —— 表结构
 ```kotlin
 @Entity(tableName = "users")
@@ -376,6 +376,8 @@ data class User(
 📌 解释：
 	•	每一个 data class 是一张表
 	•	@PrimaryKey 就是主键（必须有）
+
+ 
  2️⃣ @Dao —— 数据操作接口
  ```kotlin
 @Dao
@@ -393,6 +395,7 @@ interface UserDao {
 📌 解释：
 	•	用 @Query 写 SQL
 	•	用 @Insert / @Delete 做基本操作
+ 
  3️⃣ @Database —— 数据库入口
  ```kotlin
 @Database(entities = [User::class], version = 1)
@@ -404,6 +407,7 @@ abstract class AppDatabase : RoomDatabase() {
 	•	继承 RoomDatabase
 	•	告诉 Room：我有哪几张表（entities）
 	•	提供 Dao 的实例
+ 
  4️⃣ 初始化数据库（通常在 Repository 层或 ViewModel 里）
  ```
 val db = Room.databaseBuilder(
