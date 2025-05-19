@@ -272,14 +272,8 @@ MainActivity.kt  ← 包含所有逻辑（Compose UI + 文件操作）
 package com.example.internalstorage
 
 import android.content.Context
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+....
+
 
 class MainActivity : ComponentActivity() {
 
@@ -345,5 +339,24 @@ fun InternalStorageScreen(context: Context, fileName: String) {
     }
 }
 ```
+
+### 🧱 Room = 3 个核心组件 - “Room = 数据类 + 接口 + 数据库类，帮我自动生成数据库操作。”
+
+| 组件名      | 作用                                      |
+|:------------|:-------------------------------------------|
+| `@Entity`   | 对应一张数据库表                           |
+| `@Dao`      | 定义数据的操作（增删改查）                 |
+| `@Database` | 创建数据库实例，连接 Entity 和 Dao         |
+
+图示：
+📦 Room Database
+├── 🧱 Entity (表结构)
+├── 📄 DAO (数据操作)
+└── 💾 Database (入口)
+
+你可以类比成：
+Entity   = Kotlin 的数据类，对应数据库的一行
+DAO      = Repository 接口，定义你想查/存的动作
+Database = 数据库对象，创建数据库 + 提供 DAO 实例
 
 
