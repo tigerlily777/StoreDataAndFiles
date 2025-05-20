@@ -419,5 +419,34 @@ val db = Room.databaseBuilder(
 val userDao = db.userDao()
 ```
 
+🧱 Step 1：创建 @Entity 数据类
+
+在 Room 中，每一个 @Entity 就代表数据库中的一张表。
+
+来看一个经典示例 👇：
+```
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "users")
+data class User(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val name: String,
+    val age: Int
+)
+```
+| 注解 / 属性       | 说明                                               |
+|:------------------|:----------------------------------------------------|
+| `@Entity`         | 标注为 Room 的一张表                                 |
+| `tableName`       | 设置表名，不设置则默认为类名                         |
+| `@PrimaryKey`     | 设置主键，**必须有**                                 |
+| `autoGenerate`    | 是否自动生成主键值（如插入新用户时自动 +1）         |
+💡 这个类在 Room 中做了什么？
+
+Room 会帮你自动生成：
+	•	CREATE TABLE users (...) 的 SQL 语句
+	•	每个字段对应列（Column）
+	•	表结构的映射和映射器（ORM）
+
 
 
