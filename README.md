@@ -272,14 +272,8 @@ MainActivity.kt  ← 包含所有逻辑（Compose UI + 文件操作）
 package com.example.internalstorage
 
 import android.content.Context
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+....
+
 
 class MainActivity : ComponentActivity() {
 
@@ -345,5 +339,114 @@ fun InternalStorageScreen(context: Context, fileName: String) {
     }
 }
 ```
+
+### 🧱 Room = 3 个核心组件 - “Room = 数据类 + 接口 + 数据库类，帮我自动生成数据库操作。”
+
+| 组件名      | 作用                                      |
+|:------------|:-------------------------------------------|
+| `@Entity`   | 对应一张数据库表                           |
+| `@Dao`      | 定义数据的操作（增删改查）                 |
+| `@Database` | 创建数据库实例，连接 Entity 和 Dao         |
+
+图示：
+```
+📦 Room Database
+├── 🧱 Entity (表结构)
+├── 📄 DAO (数据操作)
+└── 💾 Database (入口)
+```
+
+你可以类比成：
+```
+Entity   = Kotlin 的数据类，对应数据库的一行
+DAO      = Repository 接口，定义你想查/存的动作
+Database = 数据库对象，创建数据库 + 提供 DAO 实例
+```
+
+#### 🎯 Sample：Room 的最小用法预览
+1️⃣ @Entity —— 表结构
+```kotlin
+@Entity(tableName = "users")
+data class User(
+    @PrimaryKey val id: Int,
+    val name: String,
+    val age: Int
+)
+```
+📌 解释：
+	•	每一个 data class 是一张表
+	•	@PrimaryKey 就是主键（必须有）
+
+ 
+ 2️⃣ @Dao —— 数据操作接口
+ ```kotlin
+@Dao
+interface UserDao {
+    @Query("SELECT * FROM users")
+    suspend fun getAll(): List<User>
+
+    @Insert
+    suspend fun insert(user: User)
+
+    @Delete
+    suspend fun delete(user: User)
+}
+```
+📌 解释：
+	•	用 @Query 写 SQL
+	•	用 @Insert / @Delete 做基本操作
+ 
+ 3️⃣ @Database —— 数据库入口
+ ```kotlin
+@Database(entities = [User::class], version = 1)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun userDao(): UserDao
+}
+```
+📌 解释：
+	•	继承 RoomDatabase
+	•	告诉 Room：我有哪几张表（entities）
+	•	提供 Dao 的实例
+ 
+ 4️⃣ 初始化数据库（通常在 Repository 层或 ViewModel 里）
+ ```
+val db = Room.databaseBuilder(
+    context,
+    AppDatabase::class.java,
+    "my-database"
+).build()
+
+val userDao = db.userDao()
+```
+
+🧱 Step 1：创建 @Entity 数据类
+
+在 Room 中，每一个 @Entity 就代表数据库中的一张表。
+
+来看一个经典示例 👇：
+```
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "users")
+data class User(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val name: String,
+    val age: Int
+)
+```
+| 注解 / 属性       | 说明                                               |
+|:------------------|:----------------------------------------------------|
+| `@Entity`         | 标注为 Room 的一张表                                 |
+| `tableName`       | 设置表名，不设置则默认为类名                         |
+| `@PrimaryKey`     | 设置主键，**必须有**                                 |
+| `autoGenerate`    | 是否自动生成主键值（如插入新用户时自动 +1）         |
+💡 这个类在 Room 中做了什么？
+
+Room 会帮你自动生成：
+	•	CREATE TABLE users (...) 的 SQL 语句
+	•	每个字段对应列（Column）
+	•	表结构的映射和映射器（ORM）
+
 
 
