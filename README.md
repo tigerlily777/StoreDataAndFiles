@@ -466,4 +466,13 @@ interface UserDao {
     suspend fun delete(user: User)
 }
 ```
+✅ Step 3：创建 AppDatabase.kt  连接 Entity 和 Dao
+```kotlin
+import androidx.room.Database
+import androidx.room.RoomDatabase
 
+@Database(entities = [User::class], version = 1)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun userDao(): UserDao
+}
+```
