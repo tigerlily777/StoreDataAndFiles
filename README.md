@@ -448,5 +448,22 @@ Room 会帮你自动生成：
 	•	每个字段对应列（Column）
 	•	表结构的映射和映射器（ORM）
 
+🧩 Step 2：创建 UserDao.kt 接口
 
+```kotlin
+import androidx.room.*
+
+@Dao
+interface UserDao {
+
+    @Insert
+    suspend fun insert(user: User)
+
+    @Query("SELECT * FROM users")
+    suspend fun getAll(): List<User>
+
+    @Delete
+    suspend fun delete(user: User)
+}
+```
 
