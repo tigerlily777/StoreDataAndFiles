@@ -9,17 +9,32 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.room.Room
+import com.example.storedataandfiles.ui.UserScreen
+import com.example.storedataandfiles.ui.UserViewModel
 
 class MainActivity : ComponentActivity() {
     private val fileName = "my_internal_file.txt"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        setContent {
+//            InternalStorageScreen(
+//                context = this,
+//                fileName = fileName
+//            )
+//        }
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "my-db"
+        ).build()
+
+        val userDao = db.userDao()
+        val viewModel = UserViewModel(userDao)
+
         setContent {
-            InternalStorageScreen(
-                context = this,
-                fileName = fileName
-            )
+            UserScreen(viewModel)
         }
     }
 }
