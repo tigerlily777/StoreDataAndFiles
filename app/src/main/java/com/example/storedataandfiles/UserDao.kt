@@ -1,10 +1,9 @@
-package com.example.storedataandfiles.ui.theme
+package com.example.storedataandfiles
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.storedataandfiles.User
 
 @Dao
 interface UserDao {
